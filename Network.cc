@@ -1,7 +1,7 @@
 #include "Network.h"
 
 Network::Network(){
-	int a[] = {3,3,3,3,3,2};
+	int a[] = {3,3,4,3,3,2};
 	numLayers = sizeof(a)/sizeof(*a);
 	layers = vector<Matrix*>(numLayers);
 	nodes = vector<Matrix*>(numLayers);
@@ -44,8 +44,10 @@ void Network::backProp(Matrix expected){
 
 	vector<Matrix*> layerErr = vector<Matrix*>(numLayers -1);
 	Matrix err = result - expected;
+	// Generate weight updates
 	for(int i = numLayers-1; i > 0; i --) {
 		Matrix diff = *(layers[i]->clone());
+		//calculate updates
 		for(int j = 0; j < diff.height; j ++) {
 			for(int k = 0; k < diff.width; k++) {
 				double fromVal = (*(nodes[i-1]))[k][0];
@@ -54,9 +56,10 @@ void Network::backProp(Matrix expected){
 			}
 		}
 		layerErr[i-1] = diff.clone();
+		// calculate next layer of error
 		if(i > 1) {
 			Matrix preErr = err;
-			err = *(nodes[i-2]->clone());
+			err = *(nodes[i-1]->clone());
 			for(int j = 0; j < err.height; j ++) {
 				err[j][0] = 0;
 				for(int k = 0; k < nodes[i]->height; k ++) {
@@ -65,51 +68,11 @@ void Network::backProp(Matrix expected){
 			}
 		}
 	}
+	//apply weight updates
 	for (int i = 1; i < numLayers; i ++) {
 		Matrix newLayer = (*(layers[i])) - (*(layerErr[i-1]));
 		layers[i] = newLayer.clone();
 	}
-	
-	
-	
-	/*
-	/////////////////////////////////////////////////////////////////////////////////////
-	Matrix e1 = result - expected;
-	Matrix e2 = ((*(nodes[1]->clone()))).apply(sigmoidP);
-	Matrix e3 = *(nodes[0]->clone());
-	Matrix e = *(e1.clone());
-	for(int i = 0; i < e1.height; i ++) {
-		e[i][0] *= e2[i][0];
-	}
-	Matrix* ErrFor2 = layers[2]->clone();
-	for(int i = 0; i < ErrFor2->height ; i++) {
-		for(int j = 0; j < ErrFor2->width; j ++) {
-			(*(ErrFor2))[i][j] -= (.5 * ((*(nodes[0]))[j][0] * e[i][0]));
-		}
-	}
-	cerr << "here\n";
-	/////////////////////////////////////////////////////////////////////////////////////
-	Matrix bigBrain = *(e1.clone());
-	for(int i = 0; i < 2; i ++) {
-		bigBrain[i][0] = ( e[0][0] * (*(layers[2]))[0][1]) + (e[1][0] * (*(layers[2]))[1][1]);
-	}
-	Matrix e4 = ((*(nodes[0]->clone()))).apply(sigmoidP);
-	Matrix* ErrFor1 = layers[1]->clone();
-	for(int i = 0; i < (ErrFor2->height * ErrFor2->width); i++) {
-		int hei = i / (int)ErrFor2->height;
-		int wid = i % ErrFor2->width;
-		(*(ErrFor1))[hei][wid] -= (.5 * (bigBrain[hei][0] * e4[hei][0] * (*(layers[0]))[wid][0]));
-	}
-	/////////////////////////////////////////////////////////////////////////////////////
-	*/
-	//layers[1] = (*ErrFor1).clone();
-	//layers[2] = (*ErrFor2).clone();
-}
-double Network::err (double x) {
-	return .5*(x*x);
-}
-double Network::err1 (double x) {
-	return x*(1-x);
 }
 double Network::sigmoid(double x) {
 	return (1 / (1 + (exp((double) -x))));

@@ -23,8 +23,6 @@ class Network{
 		static double sigmoidP(double);
 		Matrix forProp();
 		void backProp(Matrix);
-		static double err(double);
-		static double err1(double);
 		
 };
 
