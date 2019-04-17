@@ -16,11 +16,13 @@ int main(int argc, char *argv[]) {
 	(*exp)[1][0] = .99;
 	(*exp)[2][0] = .5;
 	net->backProp(*exp);
+	
 	for(int i = 0; i < 10000; i ++) {
 		net->backProp(*exp);
 	}
 	 a = net->forProp();
 	a.print();
+	
 }
 
 

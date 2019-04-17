@@ -1,7 +1,7 @@
 #include "Network.h"
 
 Network::Network(){
-	int a[] = {3,3,3};
+	int a[] = {3,3,3,3,3,2};
 	numLayers = sizeof(a)/sizeof(*a);
 	layers = vector<Matrix*>(numLayers);
 	nodes = vector<Matrix*>(numLayers);
@@ -34,33 +34,66 @@ Matrix Network::forProp(){
 }
 void Network::backProp(Matrix expected){
 	Matrix result = *(layers[0]);
+	nodes[0] = result.clone();
 	for(int i = 1; i < numLayers; i ++) {
-		result = result * (*(layers[i]));// problem is here
+		result = result * (*(layers[i]));
 		result = result + (*(bias[i-1]));
 		result.apply(this->sigmoid);
-		nodes[i-1] = (result.clone());
+		nodes[i] = result.clone();
 	}
-	Matrix e1 = result - expected;
-	Matrix e2 = ((*(nodes[1]->clone()))).apply(err1);
-	Matrix e3 = *(nodes[0]->clone());
 
+	vector<Matrix*> layerErr = vector<Matrix*>(numLayers -1);
+	Matrix err = result - expected;
+	for(int i = numLayers-1; i > 0; i --) {
+		Matrix diff = *(layers[i]->clone());
+		for(int j = 0; j < diff.height; j ++) {
+			for(int k = 0; k < diff.width; k++) {
+				double fromVal = (*(nodes[i-1]))[k][0];
+				double toVal = (*(nodes[i]))[j][0];
+				diff[j][k] = fromVal * sigmoidP(toVal) * err[j][0];
+			}
+		}
+		layerErr[i-1] = diff.clone();
+		if(i > 1) {
+			Matrix preErr = err;
+			err = *(nodes[i-2]->clone());
+			for(int j = 0; j < err.height; j ++) {
+				err[j][0] = 0;
+				for(int k = 0; k < nodes[i]->height; k ++) {
+					err[j][0] += preErr[k][0] * sigmoidP((*(nodes[i]))[k][0]) * (*(layers[i]))[k][j];
+				}
+			}
+		}
+	}
+	for (int i = 1; i < numLayers; i ++) {
+		Matrix newLayer = (*(layers[i])) - (*(layerErr[i-1]));
+		layers[i] = newLayer.clone();
+	}
+	
+	
+	
+	/*
 	/////////////////////////////////////////////////////////////////////////////////////
+	Matrix e1 = result - expected;
+	Matrix e2 = ((*(nodes[1]->clone()))).apply(sigmoidP);
+	Matrix e3 = *(nodes[0]->clone());
 	Matrix e = *(e1.clone());
 	for(int i = 0; i < e1.height; i ++) {
 		e[i][0] *= e2[i][0];
 	}
 	Matrix* ErrFor2 = layers[2]->clone();
-	for(int i = 0; i < (ErrFor2->height * ErrFor2->width); i++) {
-		int hei = i / (int)ErrFor2->height;
-		int wid = i % ErrFor2->width;
-		(*(ErrFor2))[hei][wid] -= (.5 * ((*(nodes[0]))[wid][0] * e[hei][0]));
+	for(int i = 0; i < ErrFor2->height ; i++) {
+		for(int j = 0; j < ErrFor2->width; j ++) {
+			(*(ErrFor2))[i][j] -= (.5 * ((*(nodes[0]))[j][0] * e[i][0]));
+		}
 	}
+	cerr << "here\n";
 	/////////////////////////////////////////////////////////////////////////////////////
 	Matrix bigBrain = *(e1.clone());
 	for(int i = 0; i < 2; i ++) {
 		bigBrain[i][0] = ( e[0][0] * (*(layers[2]))[0][1]) + (e[1][0] * (*(layers[2]))[1][1]);
 	}
-	Matrix e4 = ((*(nodes[0]->clone()))).apply(err1);
+	Matrix e4 = ((*(nodes[0]->clone()))).apply(sigmoidP);
 	Matrix* ErrFor1 = layers[1]->clone();
 	for(int i = 0; i < (ErrFor2->height * ErrFor2->width); i++) {
 		int hei = i / (int)ErrFor2->height;
@@ -68,8 +101,9 @@ void Network::backProp(Matrix expected){
 		(*(ErrFor1))[hei][wid] -= (.5 * (bigBrain[hei][0] * e4[hei][0] * (*(layers[0]))[wid][0]));
 	}
 	/////////////////////////////////////////////////////////////////////////////////////
-	layers[1] = (*ErrFor1).clone();
-	layers[2] = (*ErrFor2).clone();
+	*/
+	//layers[1] = (*ErrFor1).clone();
+	//layers[2] = (*ErrFor2).clone();
 }
 double Network::err (double x) {
 	return .5*(x*x);
