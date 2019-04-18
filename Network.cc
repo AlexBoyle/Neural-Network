@@ -1,11 +1,10 @@
 #include "Network.h"
 
 Network::Network(){
-	int a[] = {3,3,4,3,3,2};
+	int a[] = {784,100,100,100,10,10};
 	numLayers = sizeof(a)/sizeof(*a);
 	layers = vector<Matrix*>(numLayers);
 	nodes = vector<Matrix*>(numLayers);
-	cerr << numLayers;
 	bias = vector<Matrix*>(numLayers - 1);
 	layers[0] = new Matrix(a[0],1);
 	layers[0]->randGen();
@@ -14,30 +13,22 @@ Network::Network(){
 		layers[i] = new Matrix(a[i],a[i-1]);
 		layers[i]->randGen();
 	}
-	(*(bias[0]))[0][0] = .35;
-	(*(bias[0]))[1][0] = .35;
-	//(*(bias[0])).print();
-	(*(bias[1]))[0][0] = .60;
-	(*(bias[1]))[1][0] = .60;
-
-	//(*(layers[2])).print();
-	//https://mattmazur.com/2015/03/17/a-step-by-step-backpropagation-example/
 }
-Matrix Network::forProp(){
+Matrix Network::forProp(Matrix input){
+	layers[0] = &input;
 	Matrix result = *(layers[0]);
 	for(int i = 1; i < numLayers; i ++) {
 		result = result * (*(layers[i]));
-		result = result + (*(bias[i-1]));
 		result.apply(this->sigmoid);
 	}
 	return result;
 }
-void Network::backProp(Matrix expected){
+void Network::backProp(Matrix input, Matrix expected){
+	layers[0] = &input;
 	Matrix result = *(layers[0]);
 	nodes[0] = result.clone();
 	for(int i = 1; i < numLayers; i ++) {
 		result = result * (*(layers[i]));
-		result = result + (*(bias[i-1]));
 		result.apply(this->sigmoid);
 		nodes[i] = result.clone();
 	}
@@ -80,19 +71,3 @@ double Network::sigmoid(double x) {
 double Network::sigmoidP(double x) {
 	return x * (1-x);
 }
-
-/*
-np.dot(
-	self.input.T,
-	(
-		np.dot(
-			2*(self.y - self.output) * sigmoid_derivative(self.output),
-			self.weights2.T
-		) 
-		* sigmoid_derivative(self.layer1)
-	)
-)
-
-
-
-*/

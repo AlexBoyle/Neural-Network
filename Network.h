@@ -21,8 +21,8 @@ class Network{
 		Network();
 		static double sigmoid(double);
 		static double sigmoidP(double);
-		Matrix forProp();
-		void backProp(Matrix);
+		Matrix forProp(Matrix);
+		void backProp(Matrix, Matrix);
 		
 };
 
