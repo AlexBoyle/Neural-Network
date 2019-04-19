@@ -15,14 +15,16 @@ class Matrix: public std::vector<std::vector<double>>{
 		int width;
 		Matrix(int,int);
 		Matrix();
-		Matrix operator*(Matrix);
-		Matrix operator-(Matrix);
-		Matrix operator+(Matrix);
+		Matrix& operator*(Matrix);
+		Matrix& operator-(Matrix);
+		Matrix& operator+(Matrix);
+		Matrix& operator=(Matrix);
 		void print();
 		void randGen();
 		Matrix apply( double (*f)(double));
 		Matrix trans();
 		Matrix* clone();
+		~Matrix();
 };
 
 #endif 

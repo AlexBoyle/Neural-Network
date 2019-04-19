@@ -1,7 +1,7 @@
 #include "Network.h"
 
 Network::Network(){
-	int a[] = {784,100,100,100,10,10};
+	int a[] = {784,16,16,16,10};
 	numLayers = sizeof(a)/sizeof(*a);
 	layers = vector<Matrix*>(numLayers);
 	nodes = vector<Matrix*>(numLayers);
@@ -9,7 +9,9 @@ Network::Network(){
 	layers[0] = new Matrix(a[0],1);
 	layers[0]->randGen();
 	for(int i = 1; i < numLayers; i ++) {
+		delete bias[i-1];
 		bias[i-1] = new Matrix(a[i],1);
+		delete layers[i];
 		layers[i] = new Matrix(a[i],a[i-1]);
 		layers[i]->randGen();
 	}
@@ -41,9 +43,7 @@ void Network::backProp(Matrix input, Matrix expected){
 		//calculate updates
 		for(int j = 0; j < diff.height; j ++) {
 			for(int k = 0; k < diff.width; k++) {
-				double fromVal = (*(nodes[i-1]))[k][0];
-				double toVal = (*(nodes[i]))[j][0];
-				diff[j][k] = fromVal * sigmoidP(toVal) * err[j][0];
+				diff[j][k] = ((*(nodes[i-1]))[k][0]) * sigmoidP((*(nodes[i]))[j][0]) * err[j][0];
 			}
 		}
 		layerErr[i-1] = diff.clone();
@@ -64,6 +64,7 @@ void Network::backProp(Matrix input, Matrix expected){
 		Matrix newLayer = (*(layers[i])) - (*(layerErr[i-1]));
 		layers[i] = newLayer.clone();
 	}
+	layerErr.clear();
 }
 double Network::sigmoid(double x) {
 	return (1 / (1 + (exp((double) -x))));
