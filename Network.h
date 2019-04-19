@@ -16,14 +16,11 @@ class Network{
 		double rate = 1;
 		int numLayers;
 		vector<Matrix*> layers;
-		vector<Matrix*> nodes;
-		vector<Matrix*> bias;
 		Network();
 		static double sigmoid(double);
 		static double sigmoidP(double);
-		Matrix forProp(Matrix);
+		Matrix* forProp(Matrix);
 		void backProp(Matrix, Matrix);
-		
 };
 
 #endif 

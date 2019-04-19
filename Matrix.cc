@@ -20,7 +20,7 @@ void Matrix::print() {
 	}
 	cerr << "\n";
 }
-Matrix& Matrix::operator*(Matrix right) {
+Matrix* Matrix::operator*(Matrix right) {
 	Matrix* out = new Matrix(right.height, this->width);
 	for(int i = 0; i < right.height; i ++) {
 		for(int j = 0; j < this->width; j ++) {
@@ -29,27 +29,27 @@ Matrix& Matrix::operator*(Matrix right) {
 			}
 		}
 	}
-	return (*out);
+	return out;
 }
-Matrix& Matrix::operator-(Matrix right) {
+Matrix* Matrix::operator-(Matrix right) {
 	Matrix* out = new Matrix(this->height, this->width);
 	for(int i = 0; i < this->height; i ++) {
 		for(int j = 0; j < this->width; j ++) {
 			(*out)[i][j] = (*this)[i][j] - right[i][j];
 		}
 	}
-	return (*out);
+	return out;
 }
-Matrix& Matrix::operator+(Matrix right) {
+Matrix* Matrix::operator+(Matrix right) {
 	Matrix* out = new Matrix(this->height, this->width);
 	for(int i = 0; i < this->height; i ++) {
 		for(int j = 0; j < this->width; j ++) {
 			(*out)[i][j] = (*this)[i][j] + right[i][j];
 		}
 	}
-	return (*out);
+	return out;
 }
-Matrix& Matrix::operator=(Matrix right) {
+Matrix* Matrix::operator=(Matrix right) {
 	this->clear();
 	this->height = right.height;
 	this->width = right.width;
@@ -59,7 +59,7 @@ Matrix& Matrix::operator=(Matrix right) {
 			(*this)[i][j] = right[i][j];
 		}
 	}
-	return (*this);
+	return this;
 }
 void Matrix::randGen() {
 	for(int i = 0; i < this->height; i ++) {

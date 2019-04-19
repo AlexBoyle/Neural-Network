@@ -81,6 +81,8 @@ void read_mnist()
 				}
 			}
 			net->backProp((*(image)),(*(expected)));
+			delete expected;
+			delete image;
 		}
 		cerr << "Finished Reading images\n";
 	}
