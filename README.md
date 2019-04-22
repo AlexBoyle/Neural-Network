@@ -1,4 +1,4 @@
-# Neural-Network
+# Neural-Network (THIS PROJECT IS A WIP; THIS REPO IS SO I CAN MOVE CODE AROUND)
 This project is an attempt to teach myself the inner workings of simple neural networks
 ## Status
 - The network seams to be able to learn and evaluate correctly
