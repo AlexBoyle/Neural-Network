@@ -1,15 +1,32 @@
 #include "Matrix.h"
 
+
+int Matrix::a = 0;
 Matrix::Matrix(){
+	a++;
 	this->height = 0;
 	this->width = 0;
 }
+
+Matrix::Matrix(const Matrix& right){
+	a++;
+	this->height = right.height;
+	this->width = right.width;
+	this->resize(this->height , std::vector<double>( (this->width) , 0));
+	for(int i = 0; i < this->height; i ++) {
+		for(int j = 0; j < this->width; j ++) {
+			(*this)[i][j] = right[i][j];
+		}
+	}
+}
+
 Matrix::Matrix(int height, int width): std::vector<std::vector<double>>(){
-	srand (time(NULL));
+	a++;
 	this->height = height;
 	this->width = width;
 	this->resize(this->height , std::vector<double>( (this->width) , 0));
 }
+
 void Matrix::print() {
 	for(int i = 0; i < this->height; i ++) {
 		cerr << "\n|";
@@ -20,36 +37,46 @@ void Matrix::print() {
 	}
 	cerr << "\n";
 }
-Matrix* Matrix::operator*(Matrix right) {
-	Matrix* out = new Matrix(right.height, this->width);
+Matrix Matrix::operator*(Matrix right) {
+	Matrix temp((*this));
+	return (temp *= right);
+}
+Matrix Matrix::operator*=(Matrix right) {
+	Matrix temp(right.height, this->width);
 	for(int i = 0; i < right.height; i ++) {
 		for(int j = 0; j < this->width; j ++) {
 			for(int k = 0; k < this->height; k ++) {
-				(*out)[i][j] += (*this)[k][j] * right[i][k];
+				temp[i][j] += (*this)[k][j] * right[i][k];
 			}
 		}
 	}
-	return out;
+	return temp;
 }
-Matrix* Matrix::operator-(Matrix right) {
-	Matrix* out = new Matrix(this->height, this->width);
+Matrix Matrix::operator+=(Matrix right) {
 	for(int i = 0; i < this->height; i ++) {
 		for(int j = 0; j < this->width; j ++) {
-			(*out)[i][j] = (*this)[i][j] - right[i][j];
+			(*this)[i][j] = (*this)[i][j] + right[i][j];
 		}
 	}
-	return out;
+	return (*this);
 }
-Matrix* Matrix::operator+(Matrix right) {
-	Matrix* out = new Matrix(this->height, this->width);
+Matrix Matrix::operator-=(Matrix right) {
 	for(int i = 0; i < this->height; i ++) {
 		for(int j = 0; j < this->width; j ++) {
-			(*out)[i][j] = (*this)[i][j] + right[i][j];
+			(*this)[i][j] -= right[i][j];
 		}
 	}
-	return out;
+	return *this;
 }
-Matrix* Matrix::operator=(Matrix right) {
+Matrix Matrix::operator-(Matrix right) {
+	Matrix temp((*this));
+	return (temp -= right);
+}
+Matrix Matrix::operator+(Matrix right) {
+	Matrix temp((*this));
+	return (temp += right);
+}
+Matrix Matrix::operator=(Matrix right) {
 	this->clear();
 	this->height = right.height;
 	this->width = right.width;
@@ -59,12 +86,26 @@ Matrix* Matrix::operator=(Matrix right) {
 			(*this)[i][j] = right[i][j];
 		}
 	}
-	return this;
+	return (*this);
 }
-void Matrix::randGen() {
+Matrix Matrix::operator=(Matrix* right) {
+	this->clear();
+	this->height = right->height;
+	this->width = right->width;
+	this->resize(this->height , std::vector<double>( (this->width) , 0));
 	for(int i = 0; i < this->height; i ++) {
 		for(int j = 0; j < this->width; j ++) {
-			(*this)[i][j] = ((double) rand()) / (double) RAND_MAX;
+			(*this)[i][j] = (*right)[i][j];
+		}
+	}
+	delete right;
+	return (*this);
+}
+void Matrix::randGen() {
+	srand (time(NULL));
+	for(int i = 0; i < this->height; i ++) {
+		for(int j = 0; j < this->width; j ++) {
+			(*this)[i][j] = (((double) rand()) / (double) RAND_MAX)*.001;
 		}
 	}
 }
@@ -75,24 +116,6 @@ Matrix Matrix::apply( double (*f)(double)) {
 		}
 	}
 	return (*this);
-}
-Matrix Matrix::trans() {
-	Matrix* out = new Matrix(this->width, this->height);
-	for(int i = 0; i < this->height; i ++) {
-		for(int j = 0; j < this->width; j ++) {
-			(*out)[j][i] = (*this)[i][j];
-		}
-	}
-	return *out;
-}
-Matrix* Matrix::clone() {
-	Matrix* out = new Matrix(this->height, this->width);
-	for(int i = 0; i < this->height; i ++) {
-		for(int j = 0; j < this->width; j ++) {
-			(*out)[i][j] = (*this)[i][j];
-		}
-	}
-	return out;
 }
 Matrix::~Matrix() {
 	this->clear();
