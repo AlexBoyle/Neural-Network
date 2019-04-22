@@ -1,11 +1,10 @@
 #include "Network.h"
 
 Network::Network(){
-	int a[] = {2,10,2};
+	int a[] = {784,300,16,10};
 	numLayers = sizeof(a)/sizeof(*a);
 	layers = vector<Matrix>(numLayers);
 	layers[0] = new Matrix(a[0],1);
-	layers[0].randGen();
 	for(int i = 1; i < numLayers; i ++) {
 		layers[i] = new Matrix(a[i],a[i-1]);
 		layers[i].randGen();
@@ -15,12 +14,13 @@ double Network::rate(double x) {
 	return x*.1;
 }
 Matrix Network::forProp(Matrix input) {
-	Matrix result(input);
+	vector<Matrix> nodes = vector<Matrix>(numLayers);
+	nodes[0] = input;
 	for(int i = 1; i < numLayers; i ++) {
-		result *= layers[i];
-		result.apply(sigmoid);
+		nodes[i] = nodes[i-1] * layers[i];
+		nodes[i].apply(sigmoid);
 	}
-	return result;
+	return  nodes[numLayers-1];
 }
 void Network::backProp(Matrix input, Matrix expected) {
 	vector<Matrix> nodes = vector<Matrix>(numLayers);

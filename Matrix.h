@@ -28,8 +28,6 @@ class Matrix: public std::vector<std::vector<double>>{
 		void print();
 		void randGen();
 		Matrix apply( double (*f)(double));
-		Matrix trans();
-		Matrix* clone();
 		~Matrix();
 };
 

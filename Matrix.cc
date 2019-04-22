@@ -117,25 +117,6 @@ Matrix Matrix::apply( double (*f)(double)) {
 	}
 	return (*this);
 }
-Matrix Matrix::trans() {
-	Matrix* out = new Matrix(this->width, this->height);
-	for(int i = 0; i < this->height; i ++) {
-		for(int j = 0; j < this->width; j ++) {
-			(*out)[j][i] = (*this)[i][j];
-		}
-	}
-	return *out;
-}
-Matrix* Matrix::clone() {
-	Matrix* out = new Matrix(this->height, this->width);
-	for(int i = 0; i < this->height; i ++) {
-		for(int j = 0; j < this->width; j ++) {
-			(*out)[i][j] = (*this)[i][j];
-		}
-	}
-	return out;
-}
 Matrix::~Matrix() {
-	a--;
 	this->clear();
 }

@@ -23,8 +23,8 @@ double invert(double x) {
 		return 1;
 }
 int main(int argc, char *argv[]) {
-	
-	for(int i = 0; i < 100000; i ++) {
+	/*
+	for(int i = 0; i < 10000; i ++) {
 		Matrix image(2,1);
 		image[0][0] = (i%4)/2;
 		image[1][0] = i%2;
@@ -42,9 +42,9 @@ int main(int argc, char *argv[]) {
 		cerr << "out:";
 		out.print();
 	}
-	
-	//read_mnist();
-	//check();
+	*/
+	read_mnist();
+	check();
 }
 
 int reverseInt (int i) 
