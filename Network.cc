@@ -1,7 +1,8 @@
 #include "Network.h"
 
 Network::Network(){
-	int a[] = {784,300,16,10};
+	//784,10 takes 6m23s to do one training
+	int a[] = {784,10};
 	numLayers = sizeof(a)/sizeof(*a);
 	layers = vector<Matrix>(numLayers);
 	layers[0] = new Matrix(a[0],1);

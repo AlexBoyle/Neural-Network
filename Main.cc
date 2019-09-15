@@ -24,7 +24,7 @@ double invert(double x) {
 }
 int main(int argc, char *argv[]) {
 	/*
-	for(int i = 0; i < 10000; i ++) {
+	for(int i = 0; i < 100000; i ++) {
 		Matrix image(2,1);
 		image[0][0] = (i%4)/2;
 		image[1][0] = i%2;
@@ -82,7 +82,7 @@ void read_mnist()
 		file1.read((char*)&n_rows1,sizeof(n_rows1));
 		for(int i=0;i<number_of_images;++i)
 		{
-			if(i%100 == 0) {
+			if(i%10000 == 0) {
 				cerr << "Read " << setw(5) << i << "/60000 images\n";
 			}
 			
