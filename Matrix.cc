@@ -28,6 +28,7 @@ Matrix::Matrix(int height, int width): std::vector<std::vector<double>>(){
 }
 
 void Matrix::print() {
+	cerr << "printing matrix of " << this->height << "x" << this->width << "\n";
 	for(int i = 0; i < this->height; i ++) {
 		cerr << "\n|";
 		for(int j = 0; j < this->width; j ++) {

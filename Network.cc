@@ -1,67 +1,71 @@
 #include "Network.h"
 
 Network::Network(){
-	//784,10 takes 6m23s to do one training
-	int a[] = {784,10};
-	numLayers = sizeof(a)/sizeof(*a);
-	layers = vector<Matrix>(numLayers);
-	layers[0] = new Matrix(a[0],1);
-	for(int i = 1; i < numLayers; i ++) {
-		layers[i] = new Matrix(a[i],a[i-1]);
-		layers[i].randGen();
+	// First number is "number of inputs"
+	// Second number is "number of outputs"
+	int temp[] = {784, 16, 10};
+	layerSetup = temp;
+	INPUT_LAYER = 0;
+	NUMBER_OF_LAYERS = (sizeof(temp)/sizeof(*temp));
+	NUMBER_OF_WEIGHTS = NUMBER_OF_LAYERS - 1;
+	if(NUMBER_OF_LAYERS <= 1) {
+		// Error
+	}
+	weights = vector<Matrix>(NUMBER_OF_WEIGHTS);
+	bias = vector<Matrix>(NUMBER_OF_WEIGHTS);
+	for(int i = 1; i < NUMBER_OF_LAYERS; i ++) {
+		cerr << temp[i] << '\n';
+		bias[i-1] = new Matrix(temp[i],1);
+		weights[i-1] = new Matrix(temp[i],temp[i-1]);
+		
+		weights[i-1].randGen();
+		bias[i-1].randGen();
 	}
 }
 double Network::rate(double x) {
 	return x*.1;
 }
-Matrix Network::forProp(Matrix input) {
-	vector<Matrix> nodes = vector<Matrix>(numLayers);
-	nodes[0] = input;
-	for(int i = 1; i < numLayers; i ++) {
-		nodes[i] = nodes[i-1] * layers[i];
-		nodes[i].apply(sigmoid);
-	}
-	return  nodes[numLayers-1];
+vector<Matrix> Network::forProp(Matrix input) {
+	//if(layerSetup[INPUT_LAYER] == input.height) {
+		vector<Matrix> calculatedNodes = vector<Matrix>(NUMBER_OF_LAYERS);
+		calculatedNodes[INPUT_LAYER] = input;
+		
+		for(int currentLayer = 0; currentLayer < NUMBER_OF_WEIGHTS; currentLayer ++) {
+			calculatedNodes[currentLayer + 1] = (calculatedNodes[currentLayer] * weights[currentLayer]) + bias[currentLayer];
+			//calculatedNodes[currentLayer + 1].apply(sigmoid);
+		}
+		return  calculatedNodes;
+	//}
+	//return vector<Matrix>(NUMBER_OF_LAYERS);
 }
 void Network::backProp(Matrix input, Matrix expected) {
-	vector<Matrix> nodes = vector<Matrix>(numLayers);
-	nodes[0] = input;
-	for(int i = 1; i < numLayers; i ++) {
-		nodes[i] = nodes[i-1] * layers[i];
-		nodes[i].apply(sigmoid);
-	}
-	vector<Matrix> layerErr = vector<Matrix>(numLayers -1);
-	Matrix err = nodes[numLayers-1] - expected;
-	
+	vector<Matrix> nodes = this->forProp(input);
+	vector<Matrix> errorInWeights = vector<Matrix>(NUMBER_OF_WEIGHTS);
+	Matrix errorInLayer = nodes[NUMBER_OF_LAYERS -1] - expected;
 	// Generate weight updates
-	for(int i = numLayers-1; i > 0; i --) {
-		layerErr[i-1] = layers[i];
+	for(int currentLayer = NUMBER_OF_LAYERS-1; currentLayer > 0; currentLayer --) {
+		errorInWeights[currentLayer-1] = new Matrix(weights[currentLayer-1].height, weights[currentLayer-1].width);
 		//calculate updates
-		for(int j = 0; j < layerErr[i-1].height; j ++) {
-			for(int k = 0; k < layerErr[i-1].width; k++) {
-				layerErr[i-1][j][k] = nodes[i-1][k][0] * sigmoidP(nodes[i][j][0]) * err[j][0];
+		for(int j = 0; j < errorInWeights[currentLayer-1].height; j ++) {
+			for(int k = 0; k < errorInWeights[currentLayer-1].width; k++) {
+				errorInWeights[currentLayer-1][j][k] = (weights[currentLayer-1][j][k] * errorInLayer[j][0]);
 			}
 		}
-		
-		// calculate next layer of error
-		if(i > 1) {
-			Matrix preErr = err;
-			err = new Matrix(nodes[i-1].height, 1);
-			for(int j = 0; j < err.height; j ++) {
-				for(int k = 0; k < nodes[i].height; k ++) {
-					err[j][0] += preErr[k][0] * sigmoidP(nodes[i][k][0]) * layers[i][k][j];
-				}
+		Matrix preErr = errorInLayer;
+		errorInLayer = new Matrix(nodes[currentLayer-1].height, 1);
+		for(int j = 0; j < errorInLayer.height; j ++) {
+			for(int k = 0; k < nodes[currentLayer].height; k ++) {
+				errorInLayer[j][0] += preErr[k][0] * nodes[currentLayer][k][0] * weights[currentLayer-1][k][j];
 			}
 		}
-	}
-	
-	//apply weight updates
-	for (int i = 1; i < numLayers; i ++) {
-		//layerErr[i-1].apply(rate);
-		layers[i] = layers[i] - layerErr[i-1];
+
 	}
 
-	
+	//apply weight updates
+	for (int currentLayer = 0; currentLayer < NUMBER_OF_WEIGHTS; currentLayer ++) {
+		//errorInWeights[currentLayer-1].apply(rate);
+		weights[currentLayer] = weights[currentLayer] - errorInWeights[currentLayer];
+	}
 }
 double Network::sigmoid(double x) {
 	return (1 / (1 + (exp((double) -x))));

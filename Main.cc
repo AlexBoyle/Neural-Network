@@ -105,6 +105,7 @@ void read_mnist()
 					expected[j][0] = 1;
 				}
 			}
+			
 			//Matrix::a = 0;
 			net->backProp(image,expected);
 			//cerr << "diff: " << Matrix::a << endl;
@@ -138,6 +139,8 @@ void check()
 		number_of_images= reverseInt(number_of_images);
 		file1.read((char*)&n_rows1,sizeof(n_rows1));
 		n_rows1= reverseInt(n_rows1);
+		net->weights[0].print();
+		net->weights[1].print();
 		for(int i=0;i<5;++i)
 		{
 			
@@ -154,8 +157,9 @@ void check()
 				}
 			}
 			//(*(image)).print();
-			Matrix out = net->forProp((*(image)));
-			out.print();
+			vector<Matrix> out = (net->forProp((*(image))));
+			out[1].print();
+			out[2].print();
 			cerr << (double)temp1 << endl;
 			delete image;
 		}
