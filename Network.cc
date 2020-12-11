@@ -3,7 +3,8 @@
 Network::Network(){
 	// First number is "number of inputs"
 	// Second number is "number of outputs"
-	int temp[] = {784, 16, 10};
+	
+	int temp[] = {2,4,2};
 	layerSetup = temp;
 	INPUT_LAYER = 0;
 	NUMBER_OF_LAYERS = (sizeof(temp)/sizeof(*temp));
@@ -14,7 +15,6 @@ Network::Network(){
 	weights = vector<Matrix>(NUMBER_OF_WEIGHTS);
 	bias = vector<Matrix>(NUMBER_OF_WEIGHTS);
 	for(int i = 1; i < NUMBER_OF_LAYERS; i ++) {
-		cerr << temp[i] << '\n';
 		bias[i-1] = new Matrix(temp[i],1);
 		weights[i-1] = new Matrix(temp[i],temp[i-1]);
 		
@@ -31,8 +31,8 @@ vector<Matrix> Network::forProp(Matrix input) {
 		calculatedNodes[INPUT_LAYER] = input;
 		
 		for(int currentLayer = 0; currentLayer < NUMBER_OF_WEIGHTS; currentLayer ++) {
-			calculatedNodes[currentLayer + 1] = (calculatedNodes[currentLayer] * weights[currentLayer]) + bias[currentLayer];
-			//calculatedNodes[currentLayer + 1].apply(sigmoid);
+			calculatedNodes[currentLayer + 1] = (calculatedNodes[currentLayer] * weights[currentLayer]) ;
+			calculatedNodes[currentLayer + 1].apply(sigmoid);
 		}
 		return  calculatedNodes;
 	//}
@@ -41,6 +41,7 @@ vector<Matrix> Network::forProp(Matrix input) {
 void Network::backProp(Matrix input, Matrix expected) {
 	vector<Matrix> nodes = this->forProp(input);
 	vector<Matrix> errorInWeights = vector<Matrix>(NUMBER_OF_WEIGHTS);
+	
 	Matrix errorInLayer = nodes[NUMBER_OF_LAYERS -1] - expected;
 	// Generate weight updates
 	for(int currentLayer = NUMBER_OF_LAYERS-1; currentLayer > 0; currentLayer --) {
@@ -48,7 +49,7 @@ void Network::backProp(Matrix input, Matrix expected) {
 		//calculate updates
 		for(int j = 0; j < errorInWeights[currentLayer-1].height; j ++) {
 			for(int k = 0; k < errorInWeights[currentLayer-1].width; k++) {
-				errorInWeights[currentLayer-1][j][k] = (weights[currentLayer-1][j][k] * errorInLayer[j][0]);
+				errorInWeights[currentLayer-1][j][k] = (weights[currentLayer-1][j][k] * errorInLayer[0][j] *sigmoidP(nodes[currentLayer][0][j]));
 			}
 		}
 		Matrix preErr = errorInLayer;

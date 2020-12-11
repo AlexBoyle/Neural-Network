@@ -28,7 +28,7 @@ Matrix::Matrix(int height, int width): std::vector<std::vector<double>>(){
 }
 
 void Matrix::print() {
-	cerr << "printing matrix of " << this->height << "x" << this->width << "\n";
+	cerr << "printing matrix of " << this->height << "x" << this->width;
 	for(int i = 0; i < this->height; i ++) {
 		cerr << "\n|";
 		for(int j = 0; j < this->width; j ++) {
@@ -43,11 +43,11 @@ Matrix Matrix::operator*(Matrix right) {
 	return (temp *= right);
 }
 Matrix Matrix::operator*=(Matrix right) {
-	Matrix temp(right.height, this->width);
-	for(int i = 0; i < right.height; i ++) {
-		for(int j = 0; j < this->width; j ++) {
-			for(int k = 0; k < this->height; k ++) {
-				temp[i][j] += (*this)[k][j] * right[i][k];
+	Matrix temp(this->height, right.width);
+	for(int i = 0; i < this->height; i ++) {
+		for(int j = 0; j < right.width; j ++) {
+			for(int k = 0; k < right.height; k ++) {
+				temp[i][j] += right[k][j] * (*this)[i][k];
 			}
 		}
 	}
@@ -106,7 +106,7 @@ void Matrix::randGen() {
 	srand (time(NULL));
 	for(int i = 0; i < this->height; i ++) {
 		for(int j = 0; j < this->width; j ++) {
-			(*this)[i][j] = (((double) rand()) / (double) RAND_MAX)*.001;
+			(*this)[i][j] = .3;//(((double) rand()) / (double) RAND_MAX)*.001;
 		}
 	}
 }

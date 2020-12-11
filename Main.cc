@@ -24,27 +24,45 @@ double invert(double x) {
 }
 int main(int argc, char *argv[]) {
 	/*
-	for(int i = 0; i < 100000; i ++) {
-		Matrix image(2,1);
-		image[0][0] = (i%4)/2;
-		image[1][0] = i%2;
-		Matrix expected(image);
-		expected.apply(invert);
-		net->backProp(image,expected);
-	}
-	for(int i = 0; i < 4; i ++) {
-		Matrix image1(2,1);
-		image1[0][0] = (i%4)/2;
-		image1[1][0] = i%2;
-		Matrix out = net->forProp(image1);
-		cerr << "in:";
-		image1.print();
-		cerr << "out:";
-		out.print();
-	}
+	Matrix image(1,2);
+		image[0][0] = 2;
+		image[0][1] = 4;
+		
+		Matrix expected(2,2);
+		expected[0][0] = 1;
+		expected[0][1] = 1;
+		expected[1][1] = 1;
+		expected[1][0] = 1;
+		(image*expected).print();
 	*/
-	read_mnist();
-	check();
+	
+	for(int i = 0; i < 5000; i ++) {
+		//cerr << "\n\n\n";
+		Matrix image(1,2);
+		image[0][0] = 2;
+		image[0][1] = 4;
+		Matrix expected(1,2);
+		expected[0][0] = .5;
+		expected[0][1] = .4;
+		//cerr << "Net Status:\n";
+		//net->weights[0].print();
+		//cerr << "Current Output:\n";
+		//(image*net->weights[0]).print();
+		//cerr << "Back Prop:\n";
+		net->backProp(image,expected);
+		
+	}
+	net->weights[0].print();
+	Matrix image(1,2);
+	image[0][0] = 2;
+	image[0][1] = 4;
+	vector<Matrix> out = (net->forProp(((image))));
+	out[1].print();
+
+	
+	//read_mnist();
+	//check();
+	
 }
 
 int reverseInt (int i) 
