@@ -105,6 +105,7 @@ void Matrix::randGen() {
 	srand (time(NULL));
 	for(int i = 0; i < this->height; i ++) {
 		for(int j = 0; j < this->width; j ++) {
+		    // between -1 and 1
 			(*this)[i][j] = ((((double) rand()) / (double) RAND_MAX) * 2.0)-1;
 		}
 	}
