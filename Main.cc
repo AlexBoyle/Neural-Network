@@ -15,35 +15,14 @@ int n_cols1=0;
 Network* net = new Network();
 void read_mnist();
 int reverseInt (int);
+char* imageFileName = "./train-images.idx3-ubyte";
+char* labelFileName = "./train-labels.idx1-ubyte";
 void check();
-double invert(double x) {
-	if(x == 1)
-		return 0;
-	else
-		return 1;
-}
+
 int main(int argc, char *argv[]) {
-	/*
-	for(int i = 0; i < 100000; i ++) {
-		Matrix image(2,1);
-		image[0][0] = (i%4)/2;
-		image[1][0] = i%2;
-		Matrix expected(image);
-		expected.apply(invert);
-		net->backProp(image,expected);
+    for(int i = 0; i < 1; i ++) {
+	    read_mnist();
 	}
-	for(int i = 0; i < 4; i ++) {
-		Matrix image1(2,1);
-		image1[0][0] = (i%4)/2;
-		image1[1][0] = i%2;
-		Matrix out = net->forProp(image1);
-		cerr << "in:";
-		image1.print();
-		cerr << "out:";
-		out.print();
-	}
-	*/
-	read_mnist();
 	check();
 }
 
@@ -59,45 +38,70 @@ int reverseInt (int i)
 	return ((int)c1 << 24) + ((int)c2 << 16) + ((int)c3 << 8) + c4;
 }
 
+void printImageMatrix(Matrix img, int width, int height) {
+    for(int i = 0; i < width * height; i ++) {
+        if(i%width == 0) {
+            cout << "\n";
+        }
+        if(img[i][0] < 10.0) { cout << " ";}
+        else if(img[i][0] < 75.0) { cout << "░";}
+        else if(img[i][0] < 150.0) { cout << "▒";}
+        else if(img[i][0] < 225.0) { cout << "▓";}
+        else  { cout << "█";}
+    }
+    cout << "\n";
+}
+double normalizeImage(double x) {
+	return x/255.0;
+}
 void read_mnist()
 {
-	ifstream file ("../train-images-idx3-ubyte");
-	ifstream file1 ("../train-labels-idx1-ubyte");
-	if (file.is_open() && file1.is_open())
+	ifstream imageFile (imageFileName);
+	ifstream labelFile (labelFileName);
+	if (imageFile.is_open() && labelFile.is_open())
 	{
-		
-		file.read((char*)&magic_number,sizeof(magic_number)); 
+
+		imageFile.read((char*)&magic_number,sizeof(magic_number));
 		magic_number= reverseInt(magic_number);
-		file.read((char*)&number_of_images,sizeof(number_of_images));
+		imageFile.read((char*)&number_of_images,sizeof(number_of_images));
 		number_of_images= reverseInt(number_of_images);
-		file.read((char*)&n_rows,sizeof(n_rows));
+		imageFile.read((char*)&n_rows,sizeof(n_rows));
 		n_rows= reverseInt(n_rows);
-		file.read((char*)&n_cols,sizeof(n_cols));
+		imageFile.read((char*)&n_cols,sizeof(n_cols));
 		n_cols= reverseInt(n_cols);
 		
-		file1.read((char*)&magic_number,sizeof(magic_number)); 
+		labelFile.read((char*)&magic_number,sizeof(magic_number)); 
 		magic_number= reverseInt(magic_number);
-		file1.read((char*)&number_of_images,sizeof(number_of_images));
+		labelFile.read((char*)&number_of_images,sizeof(number_of_images));
 		number_of_images= reverseInt(number_of_images);
-		file1.read((char*)&n_rows1,sizeof(n_rows1));
+		cout << "numLables: " <<number_of_images << "\n";
+
+		net->print();
+
 		for(int i=0;i<number_of_images;++i)
 		{
 			if(i%10000 == 0) {
-				cerr << "Read " << setw(5) << i << "/60000 images\n";
+				cout << "Read " << setw(5) << i << "/60000 images\n";
+
 			}
+			//if(i == 10000) {break;}
 			
 			unsigned char temp1=0;
-			file1.read((char*)&temp1,sizeof(temp1));
+			labelFile.read((char*)&temp1,sizeof(temp1));
 			Matrix image(n_rows*n_cols,1);
+
 			for(int r=0;r<n_rows;++r)
 			{
 				for(int c=0;c<n_cols;++c)
 				{
 					unsigned char temp=0;
-					file.read((char*)&temp,sizeof(temp));
+					imageFile.read((char*)&temp,sizeof(temp));
 					image[((r * n_cols) + c)][0] = (double)temp;
 				}
 			}
+			//printImageMatrix(((image)), 28, 28);
+            //cout << "Image Should Be: " << (double)temp1 << "\n" << "################################################" << "\n";
+            //if(i > 10) {exit(0);}
 			//eval here
 			Matrix expected(10,1);
 			for(int j = 0; j < 10; j ++) {
@@ -105,64 +109,76 @@ void read_mnist()
 					expected[j][0] = 1;
 				}
 			}
-			//Matrix::a = 0;
+			Matrix::a = 0;
+			image.apply(normalizeImage);
 			net->backProp(image,expected);
-			//cerr << "diff: " << Matrix::a << endl;
+			//cout << "diff: " << Matrix::a << endl;
 
 		}
-		cerr << "Finished Reading images\n";
+		cout << "Finished Reading images\n";
+		net->print();
 	}
 	else {
-		cerr << "File failed to open mnist\n";
+		cout << "File failed to open mnist\n";
 	}
 }
 void check()
 {
-	ifstream file ("../train-images-idx3-ubyte");
-	ifstream file1 ("../train-labels-idx1-ubyte");
-	if (file.is_open() && file1.is_open())
+	ifstream imageFile (imageFileName);
+    ifstream labelFile (labelFileName);
+	if (imageFile.is_open() && labelFile.is_open())
 	{
-		
-		file.read((char*)&magic_number,sizeof(magic_number)); 
+		imageFile.read((char*)&magic_number,sizeof(magic_number)); 
 		magic_number= reverseInt(magic_number);
-		file.read((char*)&number_of_images,sizeof(number_of_images));
+		imageFile.read((char*)&number_of_images,sizeof(number_of_images));
 		number_of_images= reverseInt(number_of_images);
-		file.read((char*)&n_rows,sizeof(n_rows));
+		imageFile.read((char*)&n_rows,sizeof(n_rows));
 		n_rows= reverseInt(n_rows);
-		file.read((char*)&n_cols,sizeof(n_cols));
+		imageFile.read((char*)&n_cols,sizeof(n_cols));
 		n_cols= reverseInt(n_cols);
 		
-		file1.read((char*)&magic_number,sizeof(magic_number)); 
+		labelFile.read((char*)&magic_number,sizeof(magic_number)); 
 		magic_number= reverseInt(magic_number);
-		file1.read((char*)&number_of_images,sizeof(number_of_images));
+		labelFile.read((char*)&number_of_images,sizeof(number_of_images));
 		number_of_images= reverseInt(number_of_images);
-		file1.read((char*)&n_rows1,sizeof(n_rows1));
-		n_rows1= reverseInt(n_rows1);
-		for(int i=0;i<5;++i)
+        int amtChecked = 10000;
+        int amtCorrect = 0;
+		for(int i=0;i<amtChecked;++i)
 		{
-			
 			unsigned char temp1=0;
-			file1.read((char*)&temp1,sizeof(temp1));
+			labelFile.read((char*)&temp1,sizeof(temp1));
 			Matrix* image = new Matrix(n_rows*n_cols,1);
 			for(int r=0;r<n_rows;++r)
 			{
 				for(int c=0;c<n_cols;++c)
 				{
 					unsigned char temp=0;
-					file.read((char*)&temp,sizeof(temp));
+					imageFile.read((char*)&temp,sizeof(temp));
 					(*(image))[((r * n_cols) + c)][0] = (double)temp;
 				}
 			}
-			//(*(image)).print();
+			//printImageMatrix((*(image)), 28, 28);
+
+			(*(image)).apply(normalizeImage);
 			Matrix out = net->forProp((*(image)));
-			out.print();
-			cerr << (double)temp1 << endl;
+			//out.print();
+			int outputNumber = 0;
+			double chance = 0.0;
+			for (int i = 0; i < out.size(); i ++) {
+			    if(chance < out[i][0]) {
+			    outputNumber = i;
+			    chance = out[i][0];
+			    }
+			}
+			if((int)temp1 == outputNumber){amtCorrect++;}
+			//cout << "Should Be: " << (int)temp1 << " got " << outputNumber << "\n";
 			delete image;
 		}
-		cerr << "Finished Reading images\n";
+		cout << "Got " << amtCorrect << " out of " << amtChecked << " correct\n";
+		cout << "Finished Reading images\n";
 	}
 	else {
-		cerr << "File failed to open mnist\n";
+		cout << "File failed to open mnist\n";
 	}
 }
 

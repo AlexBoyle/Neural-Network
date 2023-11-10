@@ -29,13 +29,13 @@ Matrix::Matrix(int height, int width): std::vector<std::vector<double>>(){
 
 void Matrix::print() {
 	for(int i = 0; i < this->height; i ++) {
-		cerr << "\n|";
+		cout << "\n|";
 		for(int j = 0; j < this->width; j ++) {
-			cerr << setw(12) << left << (*this)[i][j];
+			cout << setw(8) << left << fixed << std::setprecision(3) << (*this)[i][j];
 		}
-		cerr  << "|";
+		cout  << "|";
 	}
-	cerr << "\n";
+	cout << "\n";
 }
 Matrix Matrix::operator*(Matrix right) {
 	Matrix temp((*this));
@@ -105,7 +105,15 @@ void Matrix::randGen() {
 	srand (time(NULL));
 	for(int i = 0; i < this->height; i ++) {
 		for(int j = 0; j < this->width; j ++) {
-			(*this)[i][j] = (((double) rand()) / (double) RAND_MAX)*.001;
+			(*this)[i][j] = ((((double) rand()) / (double) RAND_MAX) * 2.0)-1;
+		}
+	}
+}
+void Matrix::setTo(double a) {
+	srand (time(NULL));
+	for(int i = 0; i < this->height; i ++) {
+		for(int j = 0; j < this->width; j ++) {
+			(*this)[i][j] = a+0.0;
 		}
 	}
 }

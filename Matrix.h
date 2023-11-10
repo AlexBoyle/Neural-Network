@@ -27,6 +27,7 @@ class Matrix: public std::vector<std::vector<double>>{
 		Matrix operator=(Matrix*);
 		void print();
 		void randGen();
+		void setTo(double a);
 		Matrix apply( double (*f)(double));
 		~Matrix();
 };
