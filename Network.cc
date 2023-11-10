@@ -2,7 +2,7 @@
 
 Network::Network(){
 	//784,10 takes 6m23s to do one training
-	int a[] = {784, 64, 32, 16 ,10};
+	int a[] = {784, 16, 16 ,10};
 	numLayers = sizeof(a)/sizeof(*a);
 	layers = vector<Matrix>(numLayers);
 	bias = vector<Matrix>(numLayers);
