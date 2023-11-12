@@ -1,7 +1,6 @@
 #include "Network.h"
 
 Network::Network(){
-	//784,10 takes 6m23s to do one training
 	int a[] = {784, 16 ,10};
 	numLayers = sizeof(a)/sizeof(*a);
 	layers = vector<Matrix>(numLayers);
@@ -14,9 +13,11 @@ Network::Network(){
 		layers[i].randGen();
 	}
 }
+
 double Network::rate(double x) {
 	return x;
 }
+
 Matrix Network::forProp(Matrix input) {
 	vector<Matrix> nodes = vector<Matrix>(numLayers);
 	nodes[0] = input;
@@ -26,6 +27,7 @@ Matrix Network::forProp(Matrix input) {
 	}
 	return  nodes[numLayers-1];
 }
+
 void Network::backProp(Matrix input, Matrix expected) {
 	vector<Matrix> nodes = vector<Matrix>(numLayers);
 	nodes[0] = input;
@@ -57,7 +59,7 @@ void Network::backProp(Matrix input, Matrix expected) {
 			}
 		}
 	}
-	
+
 	//apply weight updates
 	for (int i = 1; i < numLayers; i ++) {
 		layerErr[i-1].apply(rate);
@@ -66,9 +68,11 @@ void Network::backProp(Matrix input, Matrix expected) {
 
 	
 }
+
 double Network::sigmoid(double x) {
 	return (1.0 / (1.0 + (exp((double) -x))));
 }
+
 double Network::sigmoidP(double x) {
 	return x * (1.0-x);
 }

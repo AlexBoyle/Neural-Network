@@ -29,8 +29,7 @@ int main(int argc, char *argv[]) {
 	check();
 }
 
-int reverseInt (int i) 
-{
+int reverseInt (int i) {
 	unsigned char c1, c2, c3, c4;
 	c1 = i & 255;
 	c2 = (i >> 8) & 255;
