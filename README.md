@@ -8,9 +8,9 @@ t10k-images.idx3-ubyte
 t10k-labels.idx1-ubyte
 ```
 Then run the command `make`  
-This should make the file `Ner.exe`  
+This should make an exe file 
 which when run will:  
-1) Create a new network based on the variable `a` in Network.cc and assing the weights random values between 1 and -1
+1) Create a new network based on the variable `a` in Network.cc and assigning  the weights random values between 1 and -1
    1) Ie `int a[] = {784, 16 ,10};`
    2) The first number must be 784 and the last 10 for the MNIST set
 2) Train the network once on the train MNIST set

@@ -14,7 +14,7 @@ class Matrix: public std::vector<std::vector<double>>{
 		static int a;
 		int height;
 		int width;
-		Matrix::Matrix(const Matrix&);
+		Matrix(const Matrix&);
 		Matrix(int,int);
 		Matrix();
 		Matrix operator*(Matrix);
