@@ -1,8 +1,8 @@
-#include "BasicNetwork.h"
+#include "BitNetwork.h"
 
-BasicNetwork::BasicNetwork(){}
+BitNetwork::BitNetwork(){}
 
-BasicNetwork::BasicNetwork(int layerSizes[], int sizeOfArray){
+BitNetwork::BitNetwork(int layerSizes[], int sizeOfArray){
     numLayers = sizeOfArray;
 	layers = vector<Matrix>(numLayers);
 	bias = vector<Matrix>(numLayers);
@@ -15,11 +15,11 @@ BasicNetwork::BasicNetwork(int layerSizes[], int sizeOfArray){
 	}
 }
 
-double BasicNetwork::rate(double x) {
+double BitNetwork::rate(double x) {
 	return x;
 }
 
-Matrix BasicNetwork::forProp(Matrix input) {
+Matrix BitNetwork::forProp(Matrix input) {
 	vector<Matrix> nodes = vector<Matrix>(numLayers);
 	nodes[0] = input;
 	for(int i = 1; i < numLayers; i ++) {
@@ -29,7 +29,7 @@ Matrix BasicNetwork::forProp(Matrix input) {
 	return  nodes[numLayers-1];
 }
 
-void BasicNetwork::backProp(Matrix input, Matrix expected) {
+void BitNetwork::backProp(Matrix input, Matrix expected) {
 	vector<Matrix> nodes = vector<Matrix>(numLayers);
 	nodes[0] = input;
 
@@ -73,10 +73,10 @@ void BasicNetwork::backProp(Matrix input, Matrix expected) {
 
 }
 
-double BasicNetwork::sigmoid(double x) {
+double BitNetwork::sigmoid(double x) {
 	return (1.0 / (1.0 + (exp((double) -x))));
 }
 
-double BasicNetwork::sigmoidP(double x) {
+double BitNetwork::sigmoidP(double x) {
 	return x * (1.0-x);
 }

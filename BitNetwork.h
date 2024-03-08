@@ -1,23 +1,23 @@
-#ifndef BASIC_NETWORK
-#define BASIC_NETWORK
+#ifndef BIT_NETWORK
+#define BIT_NETWORK
 
 #include<cstring>
 #include <vector>
 #include <iostream>
 #include <iomanip>
-#include <stdlib.h> 
+#include <stdlib.h>
 #include <time.h>
 #include "Matrix.h"
 #include <math.h>
 
 using namespace std;
-class BasicNetwork {
+class BitNetwork {
 	public:
 		int numLayers;
 		vector<Matrix> layers;
 		vector<Matrix> bias;
-		BasicNetwork(int hiddenLayers[], int sizeOfArray);
-		BasicNetwork();
+		BitNetwork(int hiddenLayers[], int sizeOfArray);
+		BitNetwork();
 		static double sigmoid(double);
 		static double sigmoidP(double);
 		Matrix forProp(Matrix);
@@ -28,4 +28,4 @@ class BasicNetwork {
 		void load(char* fileName);
 };
 
-#endif 
+#endif

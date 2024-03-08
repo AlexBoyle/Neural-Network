@@ -1,5 +1,6 @@
 #include "mnistHelper.h"
 
+MNISTHelper::MNISTHelper(){}
 MNISTHelper::MNISTHelper(char imageFileName[], char labelFileName[]){
     imageFile = ifstream(imageFileName);
     labelFile = ifstream(labelFileName);

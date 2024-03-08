@@ -118,7 +118,7 @@ void Matrix::setTo(double a) {
 		}
 	}
 }
-Matrix Matrix::apply( double (*f)(double)) {
+Matrix Matrix::apply(double (*f)(double)) {
 	for(int i = 0; i < this->height; i ++) {
 		for(int j = 0; j < this->width; j ++) {
 			(*this)[i][j] = (*f)((*this)[i][j]);

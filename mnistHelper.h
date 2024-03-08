@@ -15,6 +15,7 @@ using namespace std;
 class MNISTHelper {
 	public:
         MNISTHelper(char imageFileName[], char labelFileName[]);
+        MNISTHelper();
         vector<MNISTImage> getAll();
         MNISTImage getNext();
         int reverseInt (int i);
