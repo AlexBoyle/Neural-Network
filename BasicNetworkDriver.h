@@ -17,8 +17,6 @@ class BasicNetworkDriver {
         void trainNetwork();
         void checkNetwork();
     private:
-        MNISTHelper mnistTestingSet;
-        MNISTHelper mnistTrainingSet;
         BasicNetwork basicNetwork;
 
 };

@@ -1,23 +1,24 @@
 #include "BasicNetworkDriver.h"
 
 BasicNetworkDriver::BasicNetworkDriver() {
-    char trainingImagesFilename[] = "./train-images.idx3-ubyte";
-    char trainingLabelsFilename[] = "./train-labels.idx1-ubyte";
-    char testingImagesFilename[] = "./t10k-images.idx3-ubyte";
-    char testingLabelsFilename[] = "./t10k-labels.idx1-ubyte";
+
+
     int layers[] = {784, 16, 10};
-    basicNetwork = BasicNetwork(layers, 3);
-    mnistTrainingSet = MNISTHelper(trainingImagesFilename, trainingLabelsFilename);
-    mnistTestingSet = MNISTHelper(testingImagesFilename, testingLabelsFilename);
+    basicNetwork = BasicNetwork(layers, 4);
+
 }
 
 void BasicNetworkDriver::run() {
     cout << "starting Basic Network Driver\n";
     trainNetwork();
+
 	checkNetwork();
 }
 
 void BasicNetworkDriver::trainNetwork() {
+        char trainingImagesFilename[] = "./train-images.idx3-ubyte";
+        char trainingLabelsFilename[] = "./train-labels.idx1-ubyte";
+        MNISTHelper mnistTrainingSet = MNISTHelper(trainingImagesFilename, trainingLabelsFilename);
         cout << "~~~~~~~~~~~~~~~~ Start training ~~~~~~~~~~~~~~~ \n";
 		for(int i = 0; i < mnistTrainingSet.number_of_images; ++i) {
 			if(i%10000 == 0) { cout << "Trained with " << setw(5) << i << "/" << mnistTrainingSet.number_of_images << " images\n"; }
@@ -33,6 +34,9 @@ void BasicNetworkDriver::trainNetwork() {
 }
 void BasicNetworkDriver::checkNetwork()
 {
+        char testingImagesFilename[] = "./t10k-images.idx3-ubyte";
+        char testingLabelsFilename[] = "./t10k-labels.idx1-ubyte";
+        MNISTHelper mnistTestingSet = MNISTHelper(testingImagesFilename, testingLabelsFilename);
         cout << "~~~~~~~~~~~~~~~~~~ Start Check ~~~~~~~~~~~~~~~~~ \n";
         int amtCorrect = 0;
 		for(int i=0;i<mnistTestingSet.number_of_images;++i)
@@ -51,6 +55,7 @@ void BasicNetworkDriver::checkNetwork()
 			if((int)mnistImage.label == outputNumber){amtCorrect++;}
 		}
 		cout << "Got " << amtCorrect << " out of " << mnistTestingSet.number_of_images << " correct\n";
+		cout << "Or " << ((double)amtCorrect/(double)mnistTestingSet.number_of_images) << "%\n";
 		cout << "~~~~~~~~~~~~~~~~~~~ End Check ~~~~~~~~~~~~~~~~~~ \n";
 }
 
