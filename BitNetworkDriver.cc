@@ -24,7 +24,7 @@ void BitNetworkDriver::trainNetwork() {
 
 			MNISTImage mnistImage = mnistTrainingSet.getNext();
 			mnistImage.image.apply(Utility::normalizeImage);
-			Matrix expected(10,1);
+			Matrix<double> expected(10,1);
 			expected[(int)mnistImage.label][0] = 1;
 			bitNetwork.backProp(mnistImage.image,expected);
 		}
@@ -39,7 +39,7 @@ void BitNetworkDriver::checkNetwork()
 		{
 			MNISTImage mnistImage = mnistTestingSet.getNext();
 			mnistImage.image.apply(Utility::normalizeImage);
-			Matrix out = bitNetwork.forProp(mnistImage.image);
+			Matrix<double> out = bitNetwork.forProp(mnistImage.image);
 			int outputNumber = 0;
 			double chance = 0.0;
 			for (long unsigned int i = 0; i < out.size(); i ++) {

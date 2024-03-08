@@ -14,14 +14,14 @@ using namespace std;
 class BasicNetwork {
 	public:
 		int numLayers;
-		vector<Matrix> layers;
-		vector<Matrix> bias;
+		vector<Matrix<double>> layers;
+		vector<Matrix<double>> bias;
 		BasicNetwork(int hiddenLayers[], int sizeOfArray);
 		BasicNetwork();
 		static double sigmoid(double);
 		static double sigmoidP(double);
-		Matrix forProp(Matrix);
-		void backProp(Matrix, Matrix);
+		Matrix<double> forProp(Matrix<double>);
+		void backProp(Matrix<double>, Matrix<double>);
 		static double rate(double);
 		void print();
 		void save(char* fileName);

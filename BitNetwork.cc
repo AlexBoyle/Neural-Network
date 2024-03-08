@@ -4,12 +4,12 @@ BitNetwork::BitNetwork(){}
 
 BitNetwork::BitNetwork(int layerSizes[], int sizeOfArray){
     numLayers = sizeOfArray;
-	layers = vector<Matrix>(numLayers);
-	bias = vector<Matrix>(numLayers);
-	layers[0] = new Matrix(layerSizes[0],1);
+	layers = vector<Matrix<double>>(numLayers);
+	bias = vector<Matrix<double>>(numLayers);
+	layers[0] = new Matrix<double>(layerSizes[0],1);
 	for(int i = 1; i < numLayers; i ++) {
-		layers[i] = new Matrix(layerSizes[i],layerSizes[i-1]);
-		bias[i] = new Matrix(layerSizes[i], 1);
+		layers[i] = new Matrix<double>(layerSizes[i],layerSizes[i-1]);
+		bias[i] = new Matrix<double>(layerSizes[i], 1);
 		bias[i].setTo(0.0);
 		layers[i].randGen();
 	}
@@ -19,8 +19,8 @@ double BitNetwork::rate(double x) {
 	return x;
 }
 
-Matrix BitNetwork::forProp(Matrix input) {
-	vector<Matrix> nodes = vector<Matrix>(numLayers);
+Matrix<double> BitNetwork::forProp(Matrix<double> input) {
+	vector<Matrix<double>> nodes = vector<Matrix<double>>(numLayers);
 	nodes[0] = input;
 	for(int i = 1; i < numLayers; i ++) {
 		nodes[i] = (nodes[i-1] * layers[i])+ bias[i];
@@ -29,8 +29,8 @@ Matrix BitNetwork::forProp(Matrix input) {
 	return  nodes[numLayers-1];
 }
 
-void BitNetwork::backProp(Matrix input, Matrix expected) {
-	vector<Matrix> nodes = vector<Matrix>(numLayers);
+void BitNetwork::backProp(Matrix<double> input, Matrix<double> expected) {
+	vector<Matrix<double>> nodes = vector<Matrix<double>>(numLayers);
 	nodes[0] = input;
 
 
@@ -39,8 +39,8 @@ void BitNetwork::backProp(Matrix input, Matrix expected) {
         nodes[i].apply(sigmoid);
 	}
 
-	vector<Matrix> layerErr = vector<Matrix>(numLayers - 1);
-	Matrix err =  nodes[numLayers-1]- expected;
+	vector<Matrix<double>> layerErr = vector<Matrix<double>>(numLayers - 1);
+	Matrix<double> err =  nodes[numLayers-1]- expected;
 
 	// Generate weight updates
 	for(int i = numLayers-1; i > 0; i --) {
@@ -54,8 +54,8 @@ void BitNetwork::backProp(Matrix input, Matrix expected) {
 
 		// calculate next layer of error
 		if(i > 1) {
-			Matrix preErr = err;
-			err = new Matrix(nodes[i-1].height, 1);
+			Matrix<double> preErr = err;
+			err = new Matrix<double>(nodes[i-1].height, 1);
 			for(int j = 0; j < err.height; j ++) {
 				for(int k = 0; k < nodes[i].height; k ++) {
 					err[j][0] += preErr[k][0] * sigmoidP(nodes[i][k][0]) * layers[i][k][j];

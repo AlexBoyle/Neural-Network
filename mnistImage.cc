@@ -1,7 +1,7 @@
 #include "mnistImage.h"
 
 
-MNISTImage::MNISTImage(Matrix image, double label) {
+MNISTImage::MNISTImage(Matrix<double> image, double label) {
     this->image = image;
     this-> label = label;
 }

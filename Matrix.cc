@@ -1,33 +1,29 @@
 #include "Matrix.h"
 
-
-int Matrix::a = 0;
-Matrix::Matrix(){
-	a++;
+template <class T>
+Matrix<T>::Matrix(){
 	this->height = 0;
 	this->width = 0;
 }
-
-Matrix::Matrix(const Matrix& right){
-	a++;
+template <class T>
+Matrix<T>::Matrix(const Matrix<T>& right){
 	this->height = right.height;
 	this->width = right.width;
-	this->resize(this->height , std::vector<double>( (this->width) , 0));
+	this->resize(this->height , std::vector<T>( (this->width) , 0));
 	for(int i = 0; i < this->height; i ++) {
 		for(int j = 0; j < this->width; j ++) {
 			(*this)[i][j] = right[i][j];
 		}
 	}
 }
-
-Matrix::Matrix(int height, int width): std::vector<std::vector<double>>(){
-	a++;
+template <class T>
+Matrix<T>::Matrix(int height, int width): std::vector<std::vector<T>>(){
 	this->height = height;
 	this->width = width;
-	this->resize(this->height , std::vector<double>( (this->width) , 0));
+	this->resize(this->height , std::vector<T>( (this->width) , 0));
 }
-
-void Matrix::print() {
+template <class T>
+void Matrix<T>::print() {
 	for(int i = 0; i < this->height; i ++) {
 		cout << "\n|";
 		for(int j = 0; j < this->width; j ++) {
@@ -37,11 +33,13 @@ void Matrix::print() {
 	}
 	cout << "\n";
 }
-Matrix Matrix::operator*(Matrix right) {
+template <class T>
+Matrix<T> Matrix<T>::operator*(Matrix<T> right) {
 	Matrix temp((*this));
 	return (temp *= right);
 }
-Matrix Matrix::operator*=(Matrix right) {
+template <class T>
+Matrix<T> Matrix<T>::operator*=(Matrix<T> right) {
 	Matrix temp(right.height, this->width);
 	for(int i = 0; i < right.height; i ++) {
 		for(int j = 0; j < this->width; j ++) {
@@ -52,7 +50,8 @@ Matrix Matrix::operator*=(Matrix right) {
 	}
 	return temp;
 }
-Matrix Matrix::operator+=(Matrix right) {
+template <class T>
+Matrix<T> Matrix<T>::operator+=(Matrix<T> right) {
 	for(int i = 0; i < this->height; i ++) {
 		for(int j = 0; j < this->width; j ++) {
 			(*this)[i][j] = (*this)[i][j] + right[i][j];
@@ -60,7 +59,8 @@ Matrix Matrix::operator+=(Matrix right) {
 	}
 	return (*this);
 }
-Matrix Matrix::operator-=(Matrix right) {
+template <class T>
+Matrix<T> Matrix<T>::operator-=(Matrix<T> right) {
 	for(int i = 0; i < this->height; i ++) {
 		for(int j = 0; j < this->width; j ++) {
 			(*this)[i][j] -= right[i][j];
@@ -68,19 +68,22 @@ Matrix Matrix::operator-=(Matrix right) {
 	}
 	return *this;
 }
-Matrix Matrix::operator-(Matrix right) {
+template <class T>
+Matrix<T> Matrix<T>::operator-(Matrix<T> right) {
 	Matrix temp((*this));
 	return (temp -= right);
 }
-Matrix Matrix::operator+(Matrix right) {
+template <class T>
+Matrix<T> Matrix<T>::operator+(Matrix<T> right) {
 	Matrix temp((*this));
 	return (temp += right);
 }
-Matrix Matrix::operator=(Matrix right) {
+template <class T>
+Matrix<T> Matrix<T>::operator=(Matrix<T> right) {
 	this->clear();
 	this->height = right.height;
 	this->width = right.width;
-	this->resize(this->height , std::vector<double>( (this->width) , 0));
+	this->resize(this->height , std::vector<T>( (this->width) , 0));
 	for(int i = 0; i < this->height; i ++) {
 		for(int j = 0; j < this->width; j ++) {
 			(*this)[i][j] = right[i][j];
@@ -88,11 +91,12 @@ Matrix Matrix::operator=(Matrix right) {
 	}
 	return (*this);
 }
-Matrix Matrix::operator=(Matrix* right) {
+template <class T>
+Matrix<T> Matrix<T>::operator=(Matrix* right) {
 	this->clear();
 	this->height = right->height;
 	this->width = right->width;
-	this->resize(this->height , std::vector<double>( (this->width) , 0));
+	this->resize(this->height , std::vector<T>( (this->width) , 0));
 	for(int i = 0; i < this->height; i ++) {
 		for(int j = 0; j < this->width; j ++) {
 			(*this)[i][j] = (*right)[i][j];
@@ -101,16 +105,18 @@ Matrix Matrix::operator=(Matrix* right) {
 	delete right;
 	return (*this);
 }
-void Matrix::randGen() {
+template <class T>
+void Matrix<T>::randGen() {
 	srand (time(NULL));
 	for(int i = 0; i < this->height; i ++) {
 		for(int j = 0; j < this->width; j ++) {
 		    // between -1 and 1
-			(*this)[i][j] = ((((double) rand()) / (double) RAND_MAX) * 2.0)-1;
+			(*this)[i][j] = ((((T) rand()) / (T) RAND_MAX) * 2.0)-1;
 		}
 	}
 }
-void Matrix::setTo(double a) {
+template <class T>
+void Matrix<T>::setTo(T a) {
 	srand (time(NULL));
 	for(int i = 0; i < this->height; i ++) {
 		for(int j = 0; j < this->width; j ++) {
@@ -118,7 +124,8 @@ void Matrix::setTo(double a) {
 		}
 	}
 }
-Matrix Matrix::apply(double (*f)(double)) {
+template <class T>
+Matrix<T> Matrix<T>::apply(T (*f)(T)) {
 	for(int i = 0; i < this->height; i ++) {
 		for(int j = 0; j < this->width; j ++) {
 			(*this)[i][j] = (*f)((*this)[i][j]);
@@ -126,6 +133,8 @@ Matrix Matrix::apply(double (*f)(double)) {
 	}
 	return (*this);
 }
-Matrix::~Matrix() {
+template <class T>
+Matrix<T>::~Matrix() {
 	this->clear();
 }
+template class Matrix<double>;

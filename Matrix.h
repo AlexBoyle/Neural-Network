@@ -9,26 +9,26 @@
 #include <time.h>
 
 using namespace std;
-class Matrix: public std::vector<std::vector<double>>{
+template <class T>
+class Matrix: public std::vector<std::vector<T>>{
 	public:
-		static int a;
 		int height;
 		int width;
-		Matrix(const Matrix&);
+		Matrix(const Matrix<T>&);
 		Matrix(int,int);
 		Matrix();
-		Matrix operator*(Matrix);
-		Matrix operator-(Matrix);
-		Matrix operator+(Matrix);
-		Matrix operator*=(Matrix);
-		Matrix operator+=(Matrix);
-		Matrix operator-=(Matrix);
-		Matrix operator=(Matrix);
-		Matrix operator=(Matrix*);
+		Matrix<T> operator*(Matrix<T>);
+		Matrix<T> operator-(Matrix<T>);
+		Matrix<T> operator+(Matrix<T>);
+		Matrix<T> operator*=(Matrix<T>);
+		Matrix<T> operator+=(Matrix<T>);
+		Matrix<T> operator-=(Matrix<T>);
+		Matrix<T> operator=(Matrix<T>);
+		Matrix<T> operator=(Matrix<T>*);
 		void print();
 		void randGen();
-		void setTo(double a);
-		Matrix apply( double (*f)(double));
+		void setTo(T a);
+		Matrix apply( T (*f)(T));
 		~Matrix();
 };
 

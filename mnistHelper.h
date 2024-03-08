@@ -19,7 +19,7 @@ class MNISTHelper {
         vector<MNISTImage> getAll();
         MNISTImage getNext();
         int reverseInt (int i);
-        void printImageMatrix(Matrix img, int width, int height);
+        void printImageMatrix(Matrix<double> img, int width, int height);
         int n_rows = 0;
         int n_cols = 0;
         int magic_number = 0;

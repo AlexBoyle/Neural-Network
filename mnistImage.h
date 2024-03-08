@@ -13,9 +13,9 @@
 using namespace std;
 class MNISTImage {
 	public:
-        MNISTImage(Matrix image, double label);
+        MNISTImage(Matrix<double> image, double label);
         MNISTImage();
-        Matrix image;
+        Matrix<double> image;
         double label;
 };
 

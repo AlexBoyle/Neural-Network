@@ -32,7 +32,7 @@ MNISTImage MNISTHelper::getNext(){
     this->currentImageIndex ++;
     unsigned char imageLabel;
     labelFile.read((char*)&imageLabel,sizeof(imageLabel));
-    Matrix image(n_rows*n_cols,1);
+    Matrix<double> image(n_rows*n_cols,1);
     for(int r=0;r<n_rows;++r) {
         for(int c=0;c<n_cols;++c) {
             unsigned char temp=0;
@@ -52,7 +52,7 @@ int MNISTHelper::reverseInt (int i) {
 	c4 = (i >> 24) & 255;
 	return ((int)c1 << 24) + ((int)c2 << 16) + ((int)c3 << 8) + c4;
 }
-void MNISTHelper::printImageMatrix(Matrix img, int width, int height) {
+void MNISTHelper::printImageMatrix(Matrix<double> img, int width, int height) {
     for(int i = 0; i < width * height; i ++) {
         if(i%width == 0) { cout << "\n"; }
         if(img[i][0] < 10.0) { cout << " ";}
