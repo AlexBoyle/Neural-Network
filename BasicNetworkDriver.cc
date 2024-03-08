@@ -3,15 +3,15 @@
 BasicNetworkDriver::BasicNetworkDriver() {
 
 
-    int layers[] = {784, 16, 10};
+    int layers[] = {784, 16, 16, 10};
     basicNetwork = BasicNetwork(layers, 4);
 
 }
 
 void BasicNetworkDriver::run() {
-    cout << "starting Basic Network Driver\n";
-    trainNetwork();
+    cout << "Starting Basic Network Driver\n";
 
+    trainNetwork();
 	checkNetwork();
 }
 
@@ -55,7 +55,7 @@ void BasicNetworkDriver::checkNetwork()
 			if((int)mnistImage.label == outputNumber){amtCorrect++;}
 		}
 		cout << "Got " << amtCorrect << " out of " << mnistTestingSet.number_of_images << " correct\n";
-		cout << "Or " << ((double)amtCorrect/(double)mnistTestingSet.number_of_images) << "%\n";
+		cout << "Or " << ((double)amtCorrect/(double)mnistTestingSet.number_of_images)*100 << "%\n";
 		cout << "~~~~~~~~~~~~~~~~~~~ End Check ~~~~~~~~~~~~~~~~~~ \n";
 }
 
