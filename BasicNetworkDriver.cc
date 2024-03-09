@@ -24,7 +24,7 @@ void BasicNetworkDriver::trainNetwork() {
 			if(i%10000 == 0) { cout << "Trained with " << setw(5) << i << "/" << mnistTrainingSet.number_of_images << " images\n"; }
 
 			MNISTImage mnistImage = mnistTrainingSet.getNext();
-			mnistImage.image.apply(Utility::normalizeImage);
+			mnistImage.image.apply(Utility::normalizeImageToOne);
 			Matrix<double> expected(10,1);
 			expected[(int)mnistImage.label][0] = 1;
 			basicNetwork.backProp(mnistImage.image,expected);
@@ -42,7 +42,7 @@ void BasicNetworkDriver::checkNetwork()
 		for(int i=0;i<mnistTestingSet.number_of_images;++i)
 		{
 			MNISTImage mnistImage = mnistTestingSet.getNext();
-			mnistImage.image.apply(Utility::normalizeImage);
+			mnistImage.image.apply(Utility::normalizeImageToOne);
 			Matrix<double> out = basicNetwork.forProp(mnistImage.image);
 			int outputNumber = 0;
 			double chance = 0.0;
