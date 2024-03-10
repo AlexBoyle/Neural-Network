@@ -86,11 +86,3 @@ int BitNetwork::quantization(int x) {
 int BitNetwork::quantizationP(int x) {
 	return x;
 }
-
-
-
-
-
-
-    return 0;
-}
