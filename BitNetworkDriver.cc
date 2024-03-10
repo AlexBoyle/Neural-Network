@@ -1,16 +1,12 @@
 #include "BitNetworkDriver.h"
 
 BitNetworkDriver::BitNetworkDriver() {
-
-
-    int layers[] = {784, 16, 16, 10};
-    bitNetwork = BitNetwork(layers, 4);
-
+    int layers[] = {784, 16, 10};
+    bitNetwork = BitNetwork(layers, 3);
 }
 
 void BitNetworkDriver::run() {
-    cout << "Starting Basic Network Driver\n";
-
+    cout << "Starting Bit Network Driver\n";
     trainNetwork();
 	checkNetwork();
 }
@@ -24,14 +20,16 @@ void BitNetworkDriver::trainNetwork() {
 			if(i%10000 == 0) { cout << "Trained with " << setw(5) << i << "/" << mnistTrainingSet.number_of_images << " images\n"; }
 
 			MNISTImage mnistImage = mnistTrainingSet.getNext();
-			Utility::printImageMatrix(mnistImage.image, 28, 28);
 			mnistImage.image.apply(Utility::normalizeImageToTernary);
-			Utility::printImageMatrix1(mnistImage.image, 28, 28);
 
-			Matrix<double> expected(10,1);
+			Matrix<int> expected(10,1);
+			expected.setTo(-1);
 			expected[(int)mnistImage.label][0] = 1;
-			bitNetwork.backProp(mnistImage.image,expected);
-			return;
+
+			Matrix<int> image = Utility::matrixConverter<double, int>(mnistImage.image);
+
+			bitNetwork.backProp(image,expected);
+			//return;
 		}
 		cout << "~~~~~~~~~~~~~~ Finished training ~~~~~~~~~~~~~~~ \n\n";
 
@@ -47,7 +45,8 @@ void BitNetworkDriver::checkNetwork()
 		{
 			MNISTImage mnistImage = mnistTestingSet.getNext();
 			mnistImage.image.apply(Utility::normalizeImageToTernary);
-			Matrix<double> out = bitNetwork.forProp(mnistImage.image);
+			Matrix<int> image = Utility::matrixConverter<double, int>(mnistImage.image);
+			Matrix<int> out = bitNetwork.forProp(image);
 			int outputNumber = 0;
 			double chance = 0.0;
 			for (long unsigned int i = 0; i < out.size(); i ++) {
@@ -56,7 +55,10 @@ void BitNetworkDriver::checkNetwork()
 			    chance = out[i][0];
 			    }
 			}
+			out.print();
+			cout << (int)mnistImage.label << "\n";
 			if((int)mnistImage.label == outputNumber){amtCorrect++;}
+			return;
 		}
 		cout << "Got " << amtCorrect << " out of " << mnistTestingSet.number_of_images << " correct\n";
 		cout << "Or " << ((double)amtCorrect/(double)mnistTestingSet.number_of_images)*100 << "%\n";

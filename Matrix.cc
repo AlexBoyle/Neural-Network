@@ -106,12 +106,12 @@ Matrix<T> Matrix<T>::operator=(Matrix* right) {
 	return (*this);
 }
 template <class T>
-void Matrix<T>::randGen() {
-	srand (time(NULL));
+void Matrix<T>::randGen(int top, int bot) {
+	srand (time(NULL)); // seed with time bc why not
+	int range =  abs(top - bot)+1;
 	for(int i = 0; i < this->height; i ++) {
 		for(int j = 0; j < this->width; j ++) {
-		    // between -1 and 1
-			(*this)[i][j] = ((((T) rand()) / (T) RAND_MAX) * 2.0)-1;
+			(*this)[i][j] = (T)((rand() / (double)RAND_MAX) * range) + bot;
 		}
 	}
 }
@@ -120,7 +120,7 @@ void Matrix<T>::setTo(T a) {
 	srand (time(NULL));
 	for(int i = 0; i < this->height; i ++) {
 		for(int j = 0; j < this->width; j ++) {
-			(*this)[i][j] = a+0.0;
+			(*this)[i][j] = a;
 		}
 	}
 }
@@ -138,3 +138,4 @@ Matrix<T>::~Matrix() {
 	this->clear();
 }
 template class Matrix<double>;
+template class Matrix<int>;

@@ -32,6 +32,16 @@ class Utility {
             }
             cout << "\n";
         }
+        template <class T, class U>
+        static Matrix<U> matrixConverter(Matrix<T> mtx) {
+             Matrix<U> output = Matrix<U>(mtx.height, mtx.width);
+             for(int i = 0; i < output.height; i ++) {
+                for(int j = 0; j < output.width; j ++) {
+                    output[i][j] = mtx[i][j];
+                }
+            }
+            return output;
+        }
 
 };
 #endif

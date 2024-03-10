@@ -11,7 +11,7 @@ BasicNetwork::BasicNetwork(int layerSizes[], int sizeOfArray){
 		layers[i] = Matrix<double>(layerSizes[i],layerSizes[i-1]);
 		bias[i] = Matrix<double>(layerSizes[i], 1);
 		bias[i].setTo(0.0);
-		layers[i].randGen();
+		layers[i].randGen(1,-1);
 	}
 }
 
