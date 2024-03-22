@@ -34,37 +34,27 @@ Matrix<double> BasicNetwork::forProp(Matrix<double> input) {
 void BasicNetwork::backProp(Matrix<double> input, Matrix<double> expected) {
 	vector<Matrix<double>> nodes = vector<Matrix<double>>(numLayers);
 	nodes[0] = input;
-
-
 	for(int i = 1; i < numLayers; i ++) {
 		nodes[i] = (nodes[i-1] * layers[i])+ bias[i];
         nodes[i].apply(sigmoid);
 	}
-
 	vector<Matrix<double>> layerErr = vector<Matrix<double>>(numLayers - 1);
 	Matrix<double> err =  nodes[numLayers-1]- expected;
-
+	Matrix<double> preErr;
+	Matrix<double> nexErr;
 	// Generate weight updates
 	for(int i = numLayers-1; i > 0; i --) {
 		layerErr[i-1] = layers[i];
+		preErr = err;
+		nexErr = Matrix<double>(nodes[i-1].height, 1);
 		//calculate updates
 		for(int j = 0; j < layerErr[i-1].height; j ++) {
 			for(int k = 0; k < layerErr[i-1].width; k++) {
 				layerErr[i-1][j][k] = nodes[i-1][k][0] * sigmoidP(nodes[i][j][0]) * err[j][0];
+				nexErr[k][0] += preErr[j][0] * sigmoidP(nodes[i][j][0]) * layers[i][j][k];
 			}
 		}
-
-		// calculate next layer of error
-		if(i > 1) {
-			Matrix<double> preErr = err;
-			err = Matrix<double>(nodes[i-1].height, 1);
-			for(int j = 0; j < err.height; j ++) {
-				for(int k = 0; k < nodes[i].height; k ++) {
-					err[j][0] += preErr[k][0] * sigmoidP(nodes[i][k][0]) * layers[i][k][j];
-				}
-			}
-		}
-
+        err = nexErr;
 	}
 
 	//apply weight updates
