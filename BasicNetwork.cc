@@ -33,15 +33,17 @@ Matrix<double> BasicNetwork::forProp(Matrix<double> input) {
 
 void BasicNetwork::backProp(Matrix<double> input, Matrix<double> expected) {
 	vector<Matrix<double>> nodes = vector<Matrix<double>>(numLayers);
+	vector<Matrix<double>> layerErr = vector<Matrix<double>>(numLayers - 1);
+	Matrix<double> preErr;
+	Matrix<double> err;
+    Matrix<double> nexErr;
+
 	nodes[0] = input;
 	for(int i = 1; i < numLayers; i ++) {
 		nodes[i] = (nodes[i-1] * layers[i])+ bias[i];
         nodes[i].apply(sigmoid);
 	}
-	vector<Matrix<double>> layerErr = vector<Matrix<double>>(numLayers - 1);
-	Matrix<double> err =  nodes[numLayers-1]- expected;
-	Matrix<double> preErr;
-	Matrix<double> nexErr;
+	err =  nodes[numLayers-1]- expected;
 	// Generate weight updates
 	for(int i = numLayers-1; i > 0; i --) {
 		layerErr[i-1] = layers[i];
