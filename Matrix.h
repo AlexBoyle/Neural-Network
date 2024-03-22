@@ -26,7 +26,7 @@ class Matrix: public std::vector<std::vector<T>>{
 		Matrix<T> operator=(Matrix<T>);
 		Matrix<T> operator=(Matrix<T>*);
 		void print();
-		void randGen(int top, int bot);
+		void randGen(T top, T bot);
 		void setTo(T a);
 		Matrix apply( T (*f)(T));
 		~Matrix();

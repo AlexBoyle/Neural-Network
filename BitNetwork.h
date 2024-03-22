@@ -9,6 +9,7 @@
 #include <time.h>
 #include "Matrix.h"
 #include <math.h>
+#include <cmath>
 
 using namespace std;
 class BitNetwork {
@@ -18,7 +19,7 @@ class BitNetwork {
 		vector<Matrix<int>> bias;
 		BitNetwork(int hiddenLayers[], int sizeOfArray);
 		BitNetwork();
-		static int quantization(int);
+		static int quantization(int, double);
 		static int quantizationP(int);
 		Matrix<int> forProp(Matrix<int>);
 		void backProp(Matrix<int>, Matrix<int>);
@@ -26,7 +27,11 @@ class BitNetwork {
 		void print();
 		void save(char* fileName);
 		void load(char* fileName);
-
+        static int initalConditions(int);
+        void debug();
+        double lambda(Matrix<int> m);
+        static int sigmoid(int);
+        static int sigmoidP(int);
 };
 
 #endif

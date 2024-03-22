@@ -7,6 +7,7 @@ BitNetworkDriver::BitNetworkDriver() {
 
 void BitNetworkDriver::run() {
     cout << "Starting Bit Network Driver\n";
+
     trainNetwork();
 	checkNetwork();
 }
@@ -16,6 +17,7 @@ void BitNetworkDriver::trainNetwork() {
         char trainingLabelsFilename[] = "./train-labels.idx1-ubyte";
         MNISTHelper mnistTrainingSet = MNISTHelper(trainingImagesFilename, trainingLabelsFilename);
         cout << "~~~~~~~~~~~~~~~~ Start training ~~~~~~~~~~~~~~~ \n";
+        //mnistTrainingSet.number_of_images
 		for(int i = 0; i < mnistTrainingSet.number_of_images; ++i) {
 			if(i%10000 == 0) { cout << "Trained with " << setw(5) << i << "/" << mnistTrainingSet.number_of_images << " images\n"; }
 
@@ -31,6 +33,7 @@ void BitNetworkDriver::trainNetwork() {
 			bitNetwork.backProp(image,expected);
 			//return;
 		}
+		bitNetwork.debug();
 		cout << "~~~~~~~~~~~~~~ Finished training ~~~~~~~~~~~~~~~ \n\n";
 
 }
@@ -41,7 +44,7 @@ void BitNetworkDriver::checkNetwork()
         MNISTHelper mnistTestingSet = MNISTHelper(testingImagesFilename, testingLabelsFilename);
         cout << "~~~~~~~~~~~~~~~~~~ Start Check ~~~~~~~~~~~~~~~~~ \n";
         int amtCorrect = 0;
-		for(int i=0;i<mnistTestingSet.number_of_images;++i)
+		for(int i=0;i<2;++i)
 		{
 			MNISTImage mnistImage = mnistTestingSet.getNext();
 			mnistImage.image.apply(Utility::normalizeImageToTernary);
@@ -56,9 +59,9 @@ void BitNetworkDriver::checkNetwork()
 			    }
 			}
 			out.print();
-			cout << (int)mnistImage.label << "\n";
+			cout << "Expected: " << (int)mnistImage.label << " Got: " << outputNumber << "\n";
 			if((int)mnistImage.label == outputNumber){amtCorrect++;}
-			return;
+
 		}
 		cout << "Got " << amtCorrect << " out of " << mnistTestingSet.number_of_images << " correct\n";
 		cout << "Or " << ((double)amtCorrect/(double)mnistTestingSet.number_of_images)*100 << "%\n";

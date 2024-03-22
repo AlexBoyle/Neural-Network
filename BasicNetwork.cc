@@ -3,18 +3,20 @@
 BasicNetwork::BasicNetwork(){}
 
 BasicNetwork::BasicNetwork(int layerSizes[], int sizeOfArray){
+
+}
+void BasicNetwork::init(int layerSizes[], int sizeOfArray) {
     numLayers = sizeOfArray;
 	layers = vector<Matrix<double>>(numLayers);
 	bias = vector<Matrix<double>>(numLayers);
 	layers[0] = Matrix<double>(layerSizes[0],1);
 	for(int i = 1; i < numLayers; i ++) {
-		layers[i] = Matrix<double>(layerSizes[i],layerSizes[i-1]);
-		bias[i] = Matrix<double>(layerSizes[i], 1);
-		bias[i].setTo(0.0);
-		layers[i].randGen(1,-1);
-	}
+        layers[i] = Matrix<double>(layerSizes[i],layerSizes[i-1]);
+        bias[i] = Matrix<double>(layerSizes[i], 1);
+        bias[i].setTo(0.0);
+        layers[i].apply(initalConditions);
+    }
 }
-
 double BasicNetwork::rate(double x) {
 	return x;
 }
@@ -79,4 +81,7 @@ double BasicNetwork::sigmoid(double x) {
 
 double BasicNetwork::sigmoidP(double x) {
 	return x * (1.0-x);
+}
+double BasicNetwork::initalConditions(double w) {
+    return ((double)((rand() / (double)RAND_MAX) * 2.0)) + -1.0;
 }

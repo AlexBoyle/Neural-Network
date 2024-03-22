@@ -16,7 +16,7 @@ class BasicNetwork {
 		int numLayers;
 		vector<Matrix<double>> layers;
 		vector<Matrix<double>> bias;
-		BasicNetwork(int hiddenLayers[], int sizeOfArray);
+		BasicNetwork(int hiddenLayers[], int);
 		BasicNetwork();
 		static double sigmoid(double);
 		static double sigmoidP(double);
@@ -24,8 +24,11 @@ class BasicNetwork {
 		void backProp(Matrix<double>, Matrix<double>);
 		static double rate(double);
 		void print();
-		void save(char* fileName);
-		void load(char* fileName);
+		void init(int hiddenLayers[], int);
+		void save(char*);
+		void load(char*);
+		static double initalConditions(double);
+
 };
 
 #endif 

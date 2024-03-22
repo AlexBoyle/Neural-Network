@@ -106,12 +106,13 @@ Matrix<T> Matrix<T>::operator=(Matrix* right) {
 	return (*this);
 }
 template <class T>
-void Matrix<T>::randGen(int top, int bot) {
+void Matrix<T>::randGen(T top, T bot) {
 	srand (time(NULL)); // seed with time bc why not
-	int range =  abs(top - bot)+1;
+	int range =  abs(top - bot);
 	for(int i = 0; i < this->height; i ++) {
 		for(int j = 0; j < this->width; j ++) {
-			(*this)[i][j] = (T)((rand() / (double)RAND_MAX) * range) + bot;
+		    //cout << ((T)((rand() / (double)RAND_MAX) * range)) << "\n";
+			(*this)[i][j] = ((T)((rand() / (double)RAND_MAX) * range)) + bot;
 		}
 	}
 }
@@ -133,6 +134,7 @@ Matrix<T> Matrix<T>::apply(T (*f)(T)) {
 	}
 	return (*this);
 }
+
 template <class T>
 Matrix<T>::~Matrix() {
 	this->clear();

@@ -3,14 +3,21 @@
 BasicNetworkDriver::BasicNetworkDriver() {
 
 
-    int layers[] = {784, 16, 16, 10};
-    basicNetwork = BasicNetwork(layers, 4);
+
+
 
 }
 
 void BasicNetworkDriver::run() {
     cout << "Starting Basic Network Driver\n";
-
+    int layers[] = {784, 16, 10};
+    int len = 3;
+    long numOfParams = 0;
+    for(int i = 0; i < len-1; i ++) {
+        numOfParams += ((long)layers[i]*(long)layers[i+1]);
+    }
+    cout << "Generating network of " << numOfParams << " params" << "\n";
+    basicNetwork.init(layers, len);
     trainNetwork();
 	checkNetwork();
 }
